@@ -1,0 +1,26 @@
+services:
+  headscale:
+    image: docker.io/headscale/headscale:v0.29.3
+    restart: unless-stopped
+    read_only: true
+    networks:
+      - default
+      - proxy-network
+    tmpfs:
+      - /var/run/headscale
+    expose:
+      - 8080
+    volumes:
+      - ./config:/etc/headscale:ro
+      - ./lib:/var/lib/headscale
+    command: serve
+    healthcheck:
+        test: ["CMD", "headscale", "health"]
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.headscale.rule=Host(`${HEADSCALE_DOMAIN}`)"
+
+networks:
+  default:
+  proxy-network:
+    external: true
