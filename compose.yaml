@@ -11,14 +11,41 @@ services:
     expose:
       - 8080
     volumes:
-      - ./config:/etc/headscale:ro
-      - ./lib:/var/lib/headscale
+      - ./headscale/config.yaml:/etc/headscale/config.yaml
+      - ./headscale/dns_records.json:/etc/headscale/dns_records.json
+      - ./headscale/data:/var/lib/headscale
     command: serve
     healthcheck:
-        test: ["CMD", "headscale", "health"]
+      test: ["CMD", "headscale", "health"]
     labels:
+      - "me.tale.headplane.target=headscale"
       - "traefik.enable=true"
       - "traefik.http.routers.headscale.rule=Host(`${HEADSCALE_DOMAIN}`)"
+      # This middleware is essential to ensuring Headplane works correctly
+      - "traefik.http.routers.headscale.middlewares=cors"
+      - "traefik.http.middlewares.cors.headers.accesscontrolallowheaders=*"
+      - "traefik.http.middlewares.cors.headers.accesscontrolallowmethods=GET,POST,PUT"
+      - "traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=https://${HEADSCALE_DOMAIN}"
+      - "traefik.http.middlewares.cors.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.cors.headers.addvaryheader=true"
+
+  headplane:
+    image: ghcr.io/tale/headplane:0.7.1
+    restart: unless-stopped
+    networks:
+      - default
+      - proxy-network
+    expose:
+      - 3000
+    volumes:
+      - ./headplane/config.yaml:/etc/headplane/config.yaml
+      - ./headplane/data:/var/lib/headplane
+      - ./headscale/config.yaml:/etc/headscale/config.yaml
+      - ./headscale/dns_records.json:/etc/headscale/dns_records.json
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.headscale.rule=Host(`${HEADSCALE_DOMAIN}`) && PathPrefix(`/admin`)"
 
 networks:
   default:
