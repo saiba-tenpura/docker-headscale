@@ -10,7 +10,13 @@ Copy the .env.example file, set the passwords and adjust the variables to match 
 cp .env.example .env
 ```
 
-For additional information refer to the [official documentation](https://).
+Copy the example configuration files for Headscale and Headplane and adjust them to your needs.
+```
+cp headscale/config.example.yaml headscale/config.yaml
+cp headplane/config.example.yaml headplane/config.yaml
+```
+
+For additional information refer to the the respective documentations [Headscale](https://headscale.net), .[Headplane](https://headplane.net)
 
 ## License
 [MIT](./LICENSE)
