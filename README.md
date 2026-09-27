@@ -1,5 +1,5 @@
-# Headsacle Compose
-My personal Headscale docker compose setup incl. an external Traefik instance for serving the web interface.
+# Headscale Compose
+My personal Headscale docker compose setup incl. a Headplane container as web UI and an external Traefik instance for serving them.
 
 ## Traefik Reverse Proxy
 For as how to setup the Traefik refer to this [repository](https://github.com/saiba-tenpura/traefik-compose).
@@ -16,6 +16,27 @@ cp headscale/config.example.yaml headscale/config.yaml
 cp headplane/config.example.yaml headplane/config.yaml
 ```
 
+## Custom DNS
+In order to use something like your own private [pi-hole](https://github.com/saiba-tenpura/docker-pi-hole) as the DNS for the Tailnet you first have to add it like any other device.
+```
+sudo tailscale up --login-server https://headscale.example.com
+# Note the IPs
+tailscale ip
+```
+
+Then configure the DNS either in the headscale/config.yaml directly or via the Headplane UI and restart the containers.
+```
+...
+
+dns:
+  ...
+
+  override_local_dns: true
+  nameservers:
+    global:
+      - <DNS_TAILSCALE_IPv4>
+      - <DNS_TAILSCALE_IPv6>
+```
 
 ## Configuring OIDC
 In order to to configure OIDC you first need an identity provider (IdP) in this example Authentik is used because it can also be setup via my other [repository](https://github.com/saiba-tenpura/docker-authentik).
@@ -28,7 +49,7 @@ server_url: https://headscale.example.com
 ...
 
 oidc:
-  issuer: "https://authentik.example.com/application/o/<HEADSCALE_SLuG>/"
+  issuer: "https://authentik.example.com/application/o/<HEADSCALE_SLUG>/"
   client_id: "<HEADSCALE_CLIENT_ID>"
   client_secret: "<HEADSCALE_CLIENT_SECRET>"
   pkce:
