@@ -17,9 +17,11 @@ cp headplane/config.example.yaml headplane/config.yaml
 ```
 
 ## Custom DNS
-In order to use something like your own private [pi-hole](https://github.com/saiba-tenpura/docker-pi-hole) as the DNS for the Tailnet you first have to add it like any other device.
+In order for rexample to use your own private [Pi-hole](https://github.com/saiba-tenpura/docker-pi-hole) as DNS you first have to add it to your Tailnet.
 ```
-sudo tailscale up --login-server https://headscale.example.com
+# The Pi-hole is the DNS server itself so we don't need to accept it
+sudo tailscale up --login-server https://headscale.example.com --accept-dns=false
+
 # Note the IPs
 tailscale ip
 ```
@@ -39,7 +41,7 @@ dns:
 ```
 
 ## Configuring OIDC
-In order to to configure OIDC you first need an identity provider (IdP) in this example Authentik is used because it can also be setup via my other [repository](https://github.com/saiba-tenpura/docker-authentik).
+In order to to configure OIDC you first need an identity provider (IdP) e.g. [Authentik](https://github.com/saiba-tenpura/docker-authentik).
 
 ### Headscale
 To configure OIDC for Headscale fill in the following in the headscale/config.yaml:
@@ -69,7 +71,7 @@ headscale:
 
   ...
 
-  api_key: ""
+  api_key: "<HEADSCALE_API_KEY>"
 
 
 oidc:
