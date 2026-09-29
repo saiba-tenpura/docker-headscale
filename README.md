@@ -40,6 +40,35 @@ dns:
       - <DNS_TAILSCALE_IPv6>
 ```
 
+
+## Exit Node
+In order to use a Tailscale device as an exit node aka. run all your traffic through said node, you first need to make it advertise itself as such.
+
+### On the node
+Either during setup:
+```
+sudo tailscale up --login-server headscale.example.com --advertise-exit-node
+```
+or when already registered:
+```
+sudo tailscale set --advertise-exit-node
+```
+
+### On the control server
+Then enable the routes on the control server.
+```
+headscale nodes list
+headscale nodes approve-routes -i <NODE_ID> --routes 0.0.0.0/0,::/0
+```
+
+### On the client
+And finally on the client set the exit node.
+```
+sudo tailscale exit-node list
+sudo tailscale set --exit-node=<NODE_HOSTNAME/IP>
+```
+
+
 ## Configuring OIDC
 In order to to configure OIDC you first need an identity provider (IdP) e.g. [Authentik](https://github.com/saiba-tenpura/docker-authentik).
 
