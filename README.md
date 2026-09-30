@@ -1,11 +1,11 @@
 # Headscale Compose
-My personal Headscale docker compose setup incl. a Headplane container as web UI and an external Traefik instance for serving them.
+My personal Headscale docker compose setup with a Headplane container as web UI and an external Traefik instance for serving them.
 
 ## Traefik Reverse Proxy
-For as how to setup the Traefik refer to this [repository](https://github.com/saiba-tenpura/traefik-compose).
+As for how to set up Traefik, refer to this [repository](https://github.com/saiba-tenpura/traefik-compose).
 
 ## Setup
-Copy the .env.example file, set the passwords and adjust the variables to match your environment.
+Copy the .env.example file, set the passwords, and adjust the variables to match your environment.
 ```bash
 cp .env.example .env
 ```
@@ -17,7 +17,7 @@ cp headplane/config.example.yaml headplane/config.yaml
 ```
 
 ## Custom DNS
-In order for rexample to use your own private [Pi-hole](https://github.com/saiba-tenpura/docker-pi-hole) as DNS you first have to add it to your Tailnet.
+To use your own private [Pi-hole](https://github.com/saiba-tenpura/docker-pi-hole) as DNS, you first have to add it to your Tailnet.
 ```
 # The Pi-hole is the DNS server itself so we don't need to accept it
 sudo tailscale up --login-server https://headscale.example.com --accept-dns=false
@@ -42,7 +42,7 @@ dns:
 
 
 ## Exit Node
-In order to use a Tailscale device as an exit node aka. run all your traffic through said node, you first need to make it advertise itself as such.
+To use a Tailscale device as an exit node (routing all your traffic through said node), you first need to make it advertise itself as such.
 
 ### On the node
 Either during setup:
@@ -62,7 +62,7 @@ headscale nodes approve-routes -i <NODE_ID> --routes 0.0.0.0/0,::/0
 ```
 
 ### On the client
-And finally on the client set the exit node.
+Finally, set the exit node on the client.
 ```
 sudo tailscale exit-node list
 sudo tailscale set --exit-node=<NODE_HOSTNAME/IP>
@@ -70,10 +70,10 @@ sudo tailscale set --exit-node=<NODE_HOSTNAME/IP>
 
 
 ## Configuring OIDC
-In order to to configure OIDC you first need an identity provider (IdP) e.g. [Authentik](https://github.com/saiba-tenpura/docker-authentik).
+To configure OIDC, you first need an identity provider (IdP) such as [Authentik](https://github.com/saiba-tenpura/docker-authentik).
 
 ### Headscale
-To configure OIDC for Headscale fill in the following in the headscale/config.yaml:
+To configure OIDC for Headscale, fill in the following in the headscale/config.yaml:
 ```yaml
 server_url: https://headscale.example.com
 
@@ -84,12 +84,12 @@ oidc:
   client_id: "<HEADSCALE_CLIENT_ID>"
   client_secret: "<HEADSCALE_CLIENT_SECRET>"
   pkce:
-    enabled true
+    enabled: true
 
 ```
 
 ### Headplane
-To configure OIDC for Headplane fill in the following in the headplane/config.yaml:
+To configure OIDC for Headplane, fill in the following in the headplane/config.yaml:
 ```yaml
 server:
   base_url: https://headscale.example.com
@@ -110,7 +110,7 @@ oidc:
   use_pkce: true
 ```
 
-For additional information refer to the respective documentations [Headscale](https://headscale.net), [Headplane](https://headplane.net).
+For additional information, refer to the respective documentation: [Headscale](https://headscale.net), [Headplane](https://headplane.net).
 
 ## License
 [MIT](./LICENSE)
